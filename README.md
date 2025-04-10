@@ -1,10 +1,8 @@
 # SEMINARI JWT
-<<<<<<< HEAD
-=======
-## Referencias 
-- CodigoPropio
+## Referències 
+- Materials de l'assignatura i ajuda del company Joaquin
 - ChatGPT
->>>>>>> a34ea80 (Exercici Seminari JWT)
+- JWT Web
 
 ## Descripció
 Una API bàsica desenvolupada en Node.js amb TypeScript, utilitzant Express i Mongoose per a la gestió de dades en MongoDB. A més, s'inclou documentació amb Swagger.
