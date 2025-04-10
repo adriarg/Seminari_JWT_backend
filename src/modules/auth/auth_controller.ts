@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
 import { registerNewUser, loginUser, googleAuth } from "../auth/auth_service.js";
+<<<<<<< HEAD
+=======
+import { generateAccessToken,generateRefreshToken } from "../../utils/jwt.handle.js";
+import jwt from 'jsonwebtoken'
+import { getUserByMail } from "../users/user_service.js";
+>>>>>>> a34ea80 (Exercici Seminari JWT)
 
 const registerCtrl = async ({body}: Request, res: Response) => {
     try{
@@ -15,7 +21,11 @@ const registerCtrl = async ({body}: Request, res: Response) => {
 const loginCtrl = async ({ body }: Request, res: Response) => {
     try {
         const { name, email, password } = body;
+<<<<<<< HEAD
         const responseUser = await loginUser({name, email, password });
+=======
+        const responseUser = await loginUser({ name, email, password });
+>>>>>>> a34ea80 (Exercici Seminari JWT)
 
         if (responseUser === 'INCORRECT_PASSWORD') {
             return res.status(403).json({ message: 'Contraseña incorrecta' });
@@ -25,12 +35,35 @@ const loginCtrl = async ({ body }: Request, res: Response) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
+<<<<<<< HEAD
         return res.json(responseUser);
+=======
+        // Configura la cookie de refresh token
+        res.cookie('refreshToken', responseUser.reftoken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+            path: '/api/auth/refresh' // Solo accesible por esta ruta
+        });
+
+        return res.json({ 
+            user: {
+                email: responseUser.user.email,
+                name: responseUser.user.name
+            },
+            accestoken:responseUser.token
+        });
+>>>>>>> a34ea80 (Exercici Seminari JWT)
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
     }
 };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a34ea80 (Exercici Seminari JWT)
 const googleAuthCtrl = async(req: Request, res: Response) =>{
     const redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URL;
     if (!redirectUri) {
@@ -50,7 +83,11 @@ const googleAuthCtrl = async(req: Request, res: Response) =>{
     const fullUrl= `${rootUrl}?${options.toString()}`;
     console.log("Redireccionando a:", fullUrl); 
     res.redirect(fullUrl);
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> a34ea80 (Exercici Seminari JWT)
 
 const googleAuthCallback = async (req: Request, res: Response) => {
     try {
@@ -66,21 +103,76 @@ const googleAuthCallback = async (req: Request, res: Response) => {
             return res.redirect('/login?error=authentication_failed');
         }
         
+<<<<<<< HEAD
         console.log(authData.token)
         // Configurar cookies no https (secure)--> acces des del web.
         res.cookie('token', authData.token, {
+=======
+        console.log(authData.accessToken)
+        // Configurar cookies no https (secure)--> acces des del web.
+        res.cookie('token', authData.accessToken, {
+>>>>>>> a34ea80 (Exercici Seminari JWT)
             httpOnly: true,
             secure: false, 
             sameSite: 'none',
             maxAge: 86400000 // 1 día
         });  
+<<<<<<< HEAD
         console.log(authData.token);
         res.redirect(`http://localhost:4200/?token=${authData.token}`);   
+=======
+        console.log(authData.accessToken);
+        res.redirect(`http://localhost:4200/?token=${authData.refreshToken}`);   
+>>>>>>> a34ea80 (Exercici Seminari JWT)
     } catch (error: any) {
         console.error('Error en callback de Google:', error);
         res.redirect('/login?error=server_error');
     }
 };
 
+<<<<<<< HEAD
 
 export { registerCtrl, loginCtrl,googleAuthCtrl, googleAuthCallback };
+=======
+const refreshTokenHandler = async (req: Request, res: Response) => {
+    console.log('Cookies recibidas:', req.cookies); // Debug
+    
+    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+    
+    if (!refreshToken) {
+        console.error('No se recibió refresh token');
+        return res.status(401).json({ 
+            message: 'Refresh token required',
+            receivedCookies: req.cookies // Para debug
+        });
+    }
+
+    try {
+        const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
+        console.log('Token decodificado:', decoded); // Debug
+
+        // Verifica que el usuario exista
+        const user = getUserByMail(decoded.email);
+        if (!user) {
+            return res.status(401).json({ message: 'User not found' });
+        }
+
+        const newAccessToken = generateRefreshToken(user);
+        
+        return res.json({ 
+            success: true,
+            refreshToken: newAccessToken ,
+            accessToken: newAccessToken
+        });
+        
+    } catch (error: any) {
+        console.error('Error al verificar refresh token:', error.message);
+        return res.status(401).json({ 
+            message: 'Invalid refresh token',
+            error: error.message // Solo para desarrollo
+        });
+    }
+};
+
+export { registerCtrl, loginCtrl,googleAuthCtrl, googleAuthCallback,refreshTokenHandler };
+>>>>>>> a34ea80 (Exercici Seminari JWT)

@@ -11,12 +11,21 @@ import { routeNotFound } from './middleware/routeNotFound.js';
 import { checkJwt } from './middleware/session.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
+<<<<<<< HEAD
+=======
+import cookieParser from 'cookie-parser';
+>>>>>>> a34ea80 (Exercici Seminari JWT)
 
 dotenv.config(); // Cargamos las variables de entorno desde el archivo .env
 
 const app = express();
+<<<<<<< HEAD
 
 const LOCAL_PORT = process.env.SERVER_PORT || 9000;
+=======
+const LOCAL_PORT = process.env.SERVER_PORT || 9000;
+app.use(cookieParser());
+>>>>>>> a34ea80 (Exercici Seminari JWT)
 
 // Configuración de Swagger
 const swaggerOptions = {
@@ -92,7 +101,11 @@ app.get('/', (req, res) => {
 // Conexión a MongoDB
 //mongoose;
 mongoose
+<<<<<<< HEAD
     .connect(process.env.MONGODB_URI || 'mongodb+srv://joan:1234@cluster0.3owhs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+=======
+    .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/Seminar5')
+>>>>>>> a34ea80 (Exercici Seminari JWT)
     .then(() => console.log('Connected to DB'))
     .catch((error) => console.error('DB Connection Error:', error));
 

@@ -17,6 +17,13 @@ export const getUserById = async (id: string) => {
     return await User.findById(id);
 };
 
+<<<<<<< HEAD
+=======
+export const getUserByMail= async (email:string) => {
+    return await User.findOne({email:email});
+};
+
+>>>>>>> a34ea80 (Exercici Seminari JWT)
 export const updateUser = async (id: string, updateData: Partial<IUser>) => {
     return await User.updateOne({ _id: id }, { $set: updateData });
 };
